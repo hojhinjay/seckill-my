@@ -1,0 +1,167 @@
+spring:
+
+  #静态资源处理
+  resources:
+    #启动默认静态资源处理，默认启动
+#    chain:
+      #资源配链启动缓存，默认启动
+      #启动资源链，默认禁用
+      #启用压缩资源（gzip，brotil）解析，默认禁用
+      #启用h5应用缓存，默认禁用
+#      html-application-cache: true
+
+  thymeleaf:
+    cache: false
+  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver   #mysql8
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.198.134:3306/seckill?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    hikari:
+      pool-name: DateHikariCP
+      minimum-idle: 5
+      #空闲连接存活最大时间，默认600000(10分钟)
+      idle-timeout: 1800000
+      #????????10
+      maximum-pool-size: 20
+      #从连接池返回的连接自动提交
+      auto-commit: true
+      #连接最大存活时间，0表示永久存活，默议1800000(30分支)
+      max-lifetime: 1800000
+      # 连接超时时间，默认30000(30秒)
+      connection-timeout: 30000
+      #测试连接是否可用的查询语句
+      connection-test-query: SELECT 1
+
+#
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    driver-class-name: com.mysql.jdbc.Driver
+#    druid:
+#        url: jdbc:mysql://192.168.198.134:3306/seckill?false=true&useUnicode=true&serverTimezone=UTC&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#        username: root
+#        password: 123456
+#        # 初始化配置
+#        initial-size: 5
+#        # 最小连接数
+#        min-idle: 5
+#        # 最大连接数
+#        max-active: 20
+#        # 获取连接超时时间
+#        max-wait: 5000
+#        # 连接有效性检测时间
+#        time-between-eviction-runs-millis: 90000
+#        # 最大空闲时间
+#        min-evictable-idle-time-millis: 1800000
+#        test-while-idle: true
+#        test-on-borrow: false
+#        test-on-return: false
+#        # 配置检测连接是否有效
+#        validation-query: select 1
+#        # 配置监控统计拦截的filters
+#        filters: stat
+#        stat-view-servlet:
+#          url-pattern: /druid/*
+#          reset-enable: false
+#          enabled: false
+#        web-stat-filter:
+#          url-pattern: /*
+#          exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+
+  web:
+    resources:
+      add-mappings: true
+      cache:
+        cachecontrol:
+          max-age: 3600
+      static-locations: classpath:/static/
+      chain:
+        compressed: true
+        enabled: true
+        cache: true
+
+  redis:
+    host: 192.168.198.134
+    port: 6379
+    database: 0
+    timeout: 3000ms
+    lettuce:
+      pool:
+        #最大连接数 默认8   # 连接池的最大数据库连接数
+        max-active: 8
+        #最大连接阻塞时间
+        max-wait: 1000ms
+        #最大空闲连接，默认8
+        max-idle: 200
+    password: 123456
+
+#RabbitMQ
+  rabbitmq:
+    #服务器
+    host: 192.168.198.134
+    #用户名
+    username: guest
+    #密码
+    password: guest
+    #虚拟主机
+    virtual-host: /
+    #端口
+    port: 5672
+    listener:
+      simple:
+        #消费者最小数量
+        concurrency: 10
+        #消费者最大数量
+        max-concurrency: 10
+        #限制消费者每次只能处理一条消息，处理完在继续下一条消息
+        prefetch: 1
+        #启动是默认启动容器
+        auto-startup: true
+        #被拒绝时重新进入队列
+        default-requeue-rejected: true
+    template:
+      retry:
+        #发布重试，默认false
+        enabled: true
+        #重试时间，默认1000ms
+        initial-interval: 1000ms
+        #重试最大次数，默认3次
+        max-attempts: 3
+        #最大重试间隔时间
+        max-interval: 10000ms
+        #重试的间隔乘数，比如配2。0  第一等10s 第二次等20s 第三次等40s
+        multiplier: 1
+
+
+#mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.example.seckillmy
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.example.sekillmy.mapper: debug
+
+server:
+  port: 8081
+
+# 线程池配置参数
+task:
+  pool:
+    corePoolSize: 10 # 设置核心线程数
+    maxPoolSize: 20  # 设置最大线程数
+    keepAliveTime: 300 # 设置空闲线程存活时间（秒）
+    queueCapacity: 100 # 设置队列容量
+    threadNamePrefix: "-signpolicy-asynnotify-" # 设置线程名称前缀
+    awaitTerminationSeconds: 60 #  设置线程池等待终止时间(秒)
+
+
+
+security:
+  notAuthUrls:
+    - /swagger-ui/**
+    - /login/login
+    - /swagger-resources/**
